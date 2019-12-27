@@ -14,10 +14,10 @@ class Cube:
 
 
 class Node:
-    def __init__(self, cube, depth):
+    def __init__(self, cube, depth, heuristic):
         self.cube = cube
         self.depth = depth
-        self.children = []
+        self.cost = heuristic + depth
 
 
 class Surface:
@@ -353,12 +353,64 @@ def bidirectional(cube1, depth):
         depth -= 1
 
 
+def heuristic_finder(cube):
+    surface_colors = []
+    for surface in cube.surfaces:
+        color_numbers = []
+        for block in surface.blocks:
+            color = block.color_number
+            if color not in color_numbers:
+                color_numbers.append(color)
+        surface_colors.append(len(color_numbers))
+    result = 0
+    for i in range(6):
+        if surface_colors[i] == 2:
+            result += 1
+        if surface_colors[i] == 3:
+            result += 2
+        if surface_colors[i] == 4:
+            result += 4
+    return result
+
+
+def a_star(frontier, depth):
+    min_cost = 1000
+    min_cost_cube = None
+    node = None
+    for fro in frontier:
+        if fro.cost < min_cost:
+            min_cost_cube = fro
+    if len(frontier) != 0:
+        node = frontier.remove(min_cost_cube)
+
+    if Moves(node.cube).is_correct():
+        return True
+    if node.depth == depth:
+        return False
+
+    for i in range(6):
+        child = Moves(copy.deepcopy(min_cost_cube.cube)).turns(i * 2)
+        child_node = Node(child, min_cost_cube.depth + 1, heuristic_finder(child))
+        frontier.append(child_node)
+
+
+def helper(cube, depth):
+    heuristic = heuristic_finder(cube)
+    root = Node(cube, 0, heuristic)
+    frontier = [root]
+    while True:
+        if a_star(frontier, depth):
+            print("found")
+            break
+
+
 def main():
     cube = get_input()
     print("start")
 
     # ids(cube, 6, 7)
-    bidirectional(cube, 6)
+    # bidirectional(cube, 6)
+    helper(cube, 5)
 
     print("end")
 
