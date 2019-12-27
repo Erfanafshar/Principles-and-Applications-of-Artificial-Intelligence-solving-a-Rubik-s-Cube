@@ -20,6 +20,16 @@ class Node:
         self.children = []
 
 
+class Surface:
+    def __init__(self, blocks):
+        self.blocks = blocks
+
+
+class Block:
+    def __init__(self, color_number):
+        self.color_number = color_number
+
+
 class Moves:
     def __init__(self, cube):
         self.cube = cube
@@ -255,15 +265,13 @@ class Moves:
                     return False
         return True
 
-
-class Surface:
-    def __init__(self, blocks):
-        self.blocks = blocks
-
-
-class Block:
-    def __init__(self, color_number):
-        self.color_number = color_number
+    @staticmethod
+    def get_correct_cube():
+        surfaces = []
+        for i in range(1, 7):
+            blocks = [Block(i), Block(i), Block(i), Block(i)]
+            surfaces.append(copy.deepcopy(blocks))
+        return Cube(surfaces)
 
 
 def get_input():
@@ -290,83 +298,31 @@ def get_input():
     return Cube(surfaces)
 
 
-def dls(limit, frontier, explored):
-    if limit == 0 or len(frontier) == 0:
+def dls(limit, cube):
+    if limit == 0:
         return False
-    parent = frontier.pop()
-    if Moves(parent).is_correct():
+    if Moves(cube).is_correct():
         return True
-    explored.append(parent)
     for i in range(6):
-        child = Moves(copy.deepcopy(parent)).turns(i * 2)
-        for exp in explored:
-            if Moves(child).is_same(exp):
-                continue
-        for fro in frontier:
-            if Moves(child).is_same(fro):
-                continue
-        frontier.append(copy.deepcopy(child))
-        result = dls(limit - 1, frontier, explored)
+        child = Moves(copy.deepcopy(cube)).turns(i * 2)
+        result = dls(limit - 1, child)
         if result:
             print("found")
 
 
 def ids(cube, min_depth, max_depth):
     for i in range(min_depth, max_depth):
-        frontier = [cube]
-        explored = []
-        result = dls(i, frontier, explored)
+        result = dls(i, cube)
         if result:
             print("found")
-
-
-def get_correct_cube():
-    surfaces = []
-    for i in range(1, 7):
-        blocks = [Block(i), Block(i), Block(i), Block(i)]
-        surfaces.append(copy.deepcopy(blocks))
-    return Cube(surfaces)
-
-
-def bfs(frontier1, explored1, frontier2):
-    if len(frontier1) == 0:
-        return False
-    parent = frontier1.pop()
-    if Moves(parent).is_correct():
-        return True
-    explored1.append(parent)
-    for i in range(6):
-        child = Moves(copy.deepcopy(parent)).turns(i * 2)
-        for exp in explored1:
-            if Moves(child).is_same(exp):
-                continue
-        for fro in frontier1:
-            if Moves(child).is_same(fro):
-                continue
-        frontier1.append(copy.deepcopy(child))
-        result = dls(frontier1, explored1 ,frontier2)
-        if result:
-            print("found")
-
-
-def bidirectional(cube):
-    cube2 = get_correct_cube()
-    forward1 = [cube]
-    forward2 = [cube2]
-    explored1 = []
-    explored2 = []
-    while True:
-        if bfs(forward1, explored1, forward2):
-            break
-        if bfs(forward2, explored2, forward1):
-            break
 
 
 def main():
     cube = get_input()
     print("start")
-    ids(cube, 6, 8)
-    #bidirectional(cube)
+
+    ids(cube, 6, 7)
+
     print("end")
 
 
