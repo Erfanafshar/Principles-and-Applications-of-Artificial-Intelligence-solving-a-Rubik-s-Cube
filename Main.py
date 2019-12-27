@@ -258,10 +258,11 @@ class Moves:
                     return False
         return True
 
-    def is_same(self, cube2):
+    @staticmethod
+    def is_same(cube1, cube2):
         for i in range(6):
             for j in range(4):
-                if self.cube.surfaces[i].blocks[j].color_number != cube2.surfaces[i].blocks[j].color_number:
+                if cube1.surfaces[i].blocks[j].color_number != cube2.surfaces[i].blocks[j].color_number:
                     return False
         return True
 
@@ -270,7 +271,7 @@ class Moves:
         surfaces = []
         for i in range(1, 7):
             blocks = [Block(i), Block(i), Block(i), Block(i)]
-            surfaces.append(copy.deepcopy(blocks))
+            surfaces.append(Surface(copy.deepcopy(blocks)))
         return Cube(surfaces)
 
 
@@ -317,11 +318,44 @@ def ids(cube, min_depth, max_depth):
             print("found")
 
 
+def bfs(my_frontier, other_frontier):
+    for my in my_frontier:
+        for other in other_frontier:
+            if Moves.is_same(my, other):
+                return True
+    parents = []
+    for i in range(len(my_frontier)):
+        parents.append(my_frontier.pop())
+
+    for parent in parents:
+        for i in range(6):
+            child = Moves(copy.deepcopy(parent)).turns(i * 2)
+            my_frontier.append(child)
+    return False
+
+
+def bidirectional(cube, depth):
+    cube2 = Moves.get_correct_cube()
+    frontier1 = [cube]
+    frontier2 = [cube2]
+    while depth != 0:
+        # from start to goal
+        if bfs(frontier1, frontier2):
+            print("found1")
+            return True
+        # from goal to start
+        if bfs(frontier2, frontier1):
+            print("found2")
+            return True
+        depth -= 1
+
+
 def main():
     cube = get_input()
     print("start")
 
-    ids(cube, 6, 7)
+    # ids(cube, 6, 7)
+    bidirectional(cube, 4)
 
     print("end")
 
