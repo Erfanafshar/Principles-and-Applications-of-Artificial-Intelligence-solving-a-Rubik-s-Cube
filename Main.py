@@ -318,7 +318,12 @@ def ids(cube, min_depth, max_depth):
             print("found")
 
 
-def bfs(my_frontier, other_frontier):
+def bfs(my_frontier, other_frontier, is_start):
+    if is_start:
+        for cube in my_frontier:
+            if Moves(cube).is_correct:
+                return True
+
     for my in my_frontier:
         for other in other_frontier:
             if Moves.is_same(my, other):
@@ -330,23 +335,21 @@ def bfs(my_frontier, other_frontier):
     for parent in parents:
         for i in range(6):
             child = Moves(copy.deepcopy(parent)).turns(i * 2)
-            my_frontier.append(child)
+            my_frontier.append(copy.deepcopy(child))
     return False
 
 
-def bidirectional(cube, depth):
+def bidirectional(cube1, depth):
     cube2 = Moves.get_correct_cube()
-    frontier1 = [cube]
+    frontier1 = [cube1]
     frontier2 = [cube2]
     while depth != 0:
         # from start to goal
-        if bfs(frontier1, frontier2):
+        if bfs(frontier1, frontier2, True):
             print("found1")
-            return True
         # from goal to start
-        if bfs(frontier2, frontier1):
+        if bfs(frontier2, frontier1, False):
             print("found2")
-            return True
         depth -= 1
 
 
@@ -355,7 +358,7 @@ def main():
     print("start")
 
     # ids(cube, 6, 7)
-    bidirectional(cube, 4)
+    bidirectional(cube, 6)
 
     print("end")
 
