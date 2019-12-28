@@ -373,35 +373,37 @@ def heuristic_finder(cube):
     return result
 
 
-def a_star(frontier, depth):
-    min_cost = 1000
-    min_cost_cube = None
-    node = None
-    for fro in frontier:
-        if fro.cost < min_cost:
-            min_cost_cube = fro
-    if len(frontier) != 0:
-        node = frontier.remove(min_cost_cube)
+def a_star_search(frontier, depth):
+    while len(frontier) != 0:
+        min_cost = 1000
+        min_cost_cube = None
+        node = None
+        for fro in frontier:
+            if fro.cost < min_cost:
+                min_cost = fro.cost
+                min_cost_cube = fro
+        if len(frontier) != 0:
+            node = frontier.pop(frontier.index(min_cost_cube))
 
-    if Moves(node.cube).is_correct():
-        return True
-    if node.depth == depth:
-        return False
+        if Moves(node.cube).is_correct():
+            return True
+        if node.depth == depth:
+            continue
 
-    for i in range(6):
-        child = Moves(copy.deepcopy(min_cost_cube.cube)).turns(i * 2)
-        child_node = Node(child, min_cost_cube.depth + 1, heuristic_finder(child))
-        frontier.append(child_node)
+        for i in range(6):
+            child = Moves(copy.deepcopy(min_cost_cube.cube)).turns(i * 2)
+            child_node = Node(child, min_cost_cube.depth + 1, heuristic_finder(child))
+            frontier.append(child_node)
+    return False
 
 
-def helper(cube, depth):
+def a_star(cube, depth):
     heuristic = heuristic_finder(cube)
     root = Node(cube, 0, heuristic)
     frontier = [root]
-    while True:
-        if a_star(frontier, depth):
-            print("found")
-            break
+
+    if a_star_search(frontier, depth):
+        print("found")
 
 
 def main():
@@ -410,7 +412,7 @@ def main():
 
     # ids(cube, 6, 7)
     # bidirectional(cube, 6)
-    helper(cube, 5)
+    a_star(cube, 5)
 
     print("end")
 
