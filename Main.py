@@ -178,74 +178,44 @@ class Moves:
 
     # turns with number
     def turns(self, turn_number):
-        if turn_number == 0:
-            Moves.rotate_clockwise(self)
-            return self.cube
-
-        if turn_number == 1:
-            Moves.rotate_counter_clockwise(self)
-            return self.cube
-
+        # if turn_number == 0:
         if turn_number == 2:
-            Moves.turn_right(self)
             Moves.rotate_clockwise(self)
-            Moves.turn_left(self)
             return self.cube
 
+        # if turn_number == 2:
         if turn_number == 3:
             Moves.turn_right(self)
-            Moves.rotate_counter_clockwise(self)
+            Moves.rotate_clockwise(self)
             Moves.turn_left(self)
             return self.cube
 
+        # if turn_number == 4:
+        if turn_number == 1:
+            Moves.turn_left(self)
+            Moves.rotate_clockwise(self)
+            Moves.turn_right(self)
+            return self.cube
+
+        # if turn_number == 6:
+        if turn_number == 0:
+            Moves.turn_up(self)
+            Moves.rotate_clockwise(self)
+            Moves.turn_down(self)
+            return self.cube
+
+        # if turn_number == 8:
         if turn_number == 4:
-            Moves.turn_left(self)
+            Moves.turn_down(self)
             Moves.rotate_clockwise(self)
-            Moves.turn_right(self)
+            Moves.turn_up(self)
             return self.cube
 
+        # if turn_number == 10:
         if turn_number == 5:
-            Moves.turn_left(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_right(self)
-            return self.cube
-
-        if turn_number == 6:
-            Moves.turn_up(self)
-            Moves.rotate_clockwise(self)
-            Moves.turn_down(self)
-            return self.cube
-
-        if turn_number == 7:
-            Moves.turn_up(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_down(self)
-            return self.cube
-
-        if turn_number == 8:
-            Moves.turn_down(self)
-            Moves.rotate_clockwise(self)
-            Moves.turn_up(self)
-            return self.cube
-
-        if turn_number == 9:
-            Moves.turn_down(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_up(self)
-            return self.cube
-
-        if turn_number == 10:
             Moves.turn_right(self)
             Moves.turn_right(self)
             Moves.rotate_clockwise(self)
-            Moves.turn_left(self)
-            Moves.turn_left(self)
-            return self.cube
-
-        if turn_number == 11:
-            Moves.turn_right(self)
-            Moves.turn_right(self)
-            Moves.rotate_counter_clockwise(self)
             Moves.turn_left(self)
             Moves.turn_left(self)
             return self.cube
@@ -299,23 +269,50 @@ def get_input():
     return Cube(surfaces)
 
 
-def dls(limit, cube):
+def dls(limit, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes):
     if limit == 0:
-        return False
+        number_of_nodes -= 1
+        return [False, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes]
     if Moves(cube).is_correct():
-        return True
+        number_of_nodes -= 1
+        return [True, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes]
     for i in range(6):
-        child = Moves(copy.deepcopy(cube)).turns(i * 2)
-        result = dls(limit - 1, child)
-        if result:
-            print("found")
+        child = Moves(copy.deepcopy(cube)).turns(i)
+        number_of_nodes += 1
+        if number_of_nodes > max_number_of_nodes:
+            max_number_of_nodes = number_of_nodes
+        generated_nodes += 1
+        path.append(i + 1)
+        result = dls(limit - 1, child, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes)
+        generated_nodes = result[3]
+        explored_nodes = result[4]
+        if result[0]:
+            return result
+        path.pop()
+    explored_nodes += 1
+    number_of_nodes -= 1
+    return [False, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes]
 
 
 def ids(cube, min_depth, max_depth):
     for i in range(min_depth, max_depth):
-        result = dls(i, cube)
-        if result:
-            print("found")
+        path = []
+        generated_nodes = 0
+        explored_nodes = 0
+        number_of_nodes = 0
+        max_number_of_nodes = 0
+        result = dls(i, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes)
+        if result[0]:
+            # print("found")
+            print("moves : ")
+            for j in range(len(result[2])):
+                print("surface number : " + str(result[2][j]))
+            print()
+            print("generated nodes : " + str(result[3]))
+            print("explored nodes : " + str(result[4]))
+            print("result depth : " + str(len(result[2])))
+            print("max number of nodes in memory : " + str(result[6]))
+            break
 
 
 def bfs(my_frontier, other_frontier, is_start):
@@ -334,7 +331,7 @@ def bfs(my_frontier, other_frontier, is_start):
 
     for parent in parents:
         for i in range(6):
-            child = Moves(copy.deepcopy(parent)).turns(i * 2)
+            child = Moves(copy.deepcopy(parent)).turns(i)
             my_frontier.append(copy.deepcopy(child))
     return False
 
@@ -391,7 +388,7 @@ def a_star_search(frontier, depth):
             continue
 
         for i in range(6):
-            child = Moves(copy.deepcopy(min_cost_cube.cube)).turns(i * 2)
+            child = Moves(copy.deepcopy(min_cost_cube.cube)).turns(i)
             child_node = Node(child, min_cost_cube.depth + 1, heuristic_finder(child))
             frontier.append(child_node)
     return False
@@ -410,9 +407,10 @@ def main():
     cube = get_input()
     print("start")
 
-    # ids(cube, 6, 7)
+    ids(cube, 10, 11)
+
     # bidirectional(cube, 6)
-    a_star(cube, 5)
+    # a_star(cube, 5)
 
     print("end")
 
