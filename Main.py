@@ -220,8 +220,9 @@ class Moves:
             Moves.turn_left(self)
             return self.cube
 
-    def is_correct(self):
-        for i in self.cube.surfaces:
+    @staticmethod
+    def is_correct(cube):
+        for i in cube.surfaces:
             surface_color = i.blocks[0].color_number
             for j in i.blocks:
                 if j.color_number != surface_color:
@@ -240,7 +241,7 @@ class Moves:
     def get_correct_cube():
         surfaces = []
         for i in range(1, 7):
-            blocks = [Block(i), Block(i), Block(i), Block(i)]
+            blocks = [Block(str(i)), Block(str(i)), Block(str(i)), Block(str(i))]
             surfaces.append(Surface(copy.deepcopy(blocks)))
         return Cube(surfaces)
 
@@ -273,7 +274,7 @@ def dls(limit, cube, path, generated_nodes, explored_nodes, number_of_nodes, max
     if limit == 0:
         number_of_nodes -= 1
         return [False, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes]
-    if Moves(cube).is_correct():
+    if Moves.is_correct(cube):
         number_of_nodes -= 1
         return [True, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes]
     for i in range(6):
@@ -303,7 +304,6 @@ def ids(cube, min_depth, max_depth):
         max_number_of_nodes = 0
         result = dls(i, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes)
         if result[0]:
-            # print("found")
             print("moves : ")
             for j in range(len(result[2])):
                 print("surface number : " + str(result[2][j]))
@@ -315,38 +315,48 @@ def ids(cube, min_depth, max_depth):
             break
 
 
-def bfs(my_frontier, other_frontier, is_start):
-    if is_start:
-        for cube in my_frontier:
-            if Moves(cube).is_correct:
-                return True
-
+def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path):
     for my in my_frontier:
         for other in other_frontier:
             if Moves.is_same(my, other):
-                return True
+                return [True, my_frontier, other_frontier, frontier_path, other_frontier_path]
+
     parents = []
+    parent_path = []
     for i in range(len(my_frontier)):
         parents.append(my_frontier.pop())
+        parent_path.append(frontier_path.pop())
 
-    for parent in parents:
-        for i in range(6):
-            child = Moves(copy.deepcopy(parent)).turns(i)
+    for i in range(len(parents)):
+        for j in range(6):
+            child = Moves(copy.deepcopy(parents[i])).turns(j)
             my_frontier.append(copy.deepcopy(child))
-    return False
+            this_parent_path = copy.deepcopy(parent_path[i])
+            this_parent_path.append(j + 1)
+            frontier_path.append(this_parent_path)
+    return [False, my_frontier, other_frontier, frontier_path, other_frontier_path]
 
 
 def bidirectional(cube1, depth):
     cube2 = Moves.get_correct_cube()
     frontier1 = [cube1]
     frontier2 = [cube2]
+    frontier1_path = [[0]]
+    frontier2_path = [[0]]
+    result = [False, frontier1, frontier2, frontier1_path, frontier2_path]
     while depth != 0:
         # from start to goal
-        if bfs(frontier1, frontier2, True):
+        res = copy.deepcopy(result)
+        result = bfs(res[1], res[2], res[3], res[4])
+        if result[0]:
             print("found1")
+            break
         # from goal to start
-        if bfs(frontier2, frontier1, False):
+        res = copy.deepcopy(result)
+        result = bfs(res[2], res[1], res[4], res[3])
+        if result[0]:
             print("found2")
+            break
         depth -= 1
 
 
@@ -407,9 +417,9 @@ def main():
     cube = get_input()
     print("start")
 
-    ids(cube, 10, 11)
+    # ids(cube, 10, 11)
 
-    # bidirectional(cube, 6)
+    bidirectional(cube, 5)
     # a_star(cube, 5)
 
     print("end")
