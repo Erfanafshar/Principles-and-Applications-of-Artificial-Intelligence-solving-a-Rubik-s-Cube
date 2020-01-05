@@ -88,15 +88,17 @@ class Moves:
         self.cube.surfaces[5] = copy.deepcopy(temp.surfaces[3])
 
         # rotate surfaces
+        # counter clockwise
         self.cube.surfaces[0].blocks[0] = copy.deepcopy(temp.surfaces[0].blocks[1])
         self.cube.surfaces[0].blocks[1] = copy.deepcopy(temp.surfaces[0].blocks[3])
         self.cube.surfaces[0].blocks[2] = copy.deepcopy(temp.surfaces[0].blocks[0])
         self.cube.surfaces[0].blocks[3] = copy.deepcopy(temp.surfaces[0].blocks[2])
 
-        self.cube.surfaces[4].blocks[0] = copy.deepcopy(temp.surfaces[4].blocks[1])
-        self.cube.surfaces[4].blocks[1] = copy.deepcopy(temp.surfaces[4].blocks[3])
-        self.cube.surfaces[4].blocks[2] = copy.deepcopy(temp.surfaces[4].blocks[0])
-        self.cube.surfaces[4].blocks[3] = copy.deepcopy(temp.surfaces[4].blocks[2])
+        # clockwise
+        self.cube.surfaces[4].blocks[0] = copy.deepcopy(temp.surfaces[4].blocks[2])
+        self.cube.surfaces[4].blocks[1] = copy.deepcopy(temp.surfaces[4].blocks[0])
+        self.cube.surfaces[4].blocks[2] = copy.deepcopy(temp.surfaces[4].blocks[3])
+        self.cube.surfaces[4].blocks[3] = copy.deepcopy(temp.surfaces[4].blocks[1])
 
     def turn_left(self):
         temp = copy.deepcopy(self.cube)
@@ -108,15 +110,17 @@ class Moves:
         self.cube.surfaces[3] = copy.deepcopy(temp.surfaces[5])
 
         # rotate surfaces
+        # clockwise
         self.cube.surfaces[0].blocks[0] = copy.deepcopy(temp.surfaces[0].blocks[2])
         self.cube.surfaces[0].blocks[1] = copy.deepcopy(temp.surfaces[0].blocks[0])
         self.cube.surfaces[0].blocks[2] = copy.deepcopy(temp.surfaces[0].blocks[3])
         self.cube.surfaces[0].blocks[3] = copy.deepcopy(temp.surfaces[0].blocks[1])
 
-        self.cube.surfaces[4].blocks[0] = copy.deepcopy(temp.surfaces[4].blocks[2])
-        self.cube.surfaces[4].blocks[1] = copy.deepcopy(temp.surfaces[4].blocks[0])
-        self.cube.surfaces[4].blocks[2] = copy.deepcopy(temp.surfaces[4].blocks[3])
-        self.cube.surfaces[4].blocks[3] = copy.deepcopy(temp.surfaces[4].blocks[1])
+        # counter clockwise
+        self.cube.surfaces[4].blocks[0] = copy.deepcopy(temp.surfaces[4].blocks[1])
+        self.cube.surfaces[4].blocks[1] = copy.deepcopy(temp.surfaces[4].blocks[3])
+        self.cube.surfaces[4].blocks[2] = copy.deepcopy(temp.surfaces[4].blocks[0])
+        self.cube.surfaces[4].blocks[3] = copy.deepcopy(temp.surfaces[4].blocks[2])
 
     def turn_up(self):
         temp = copy.deepcopy(self.cube)
@@ -126,11 +130,13 @@ class Moves:
         self.cube.surfaces[2] = copy.deepcopy(temp.surfaces[4])
 
         # rotate surfaces
-        self.cube.surfaces[1].blocks[0] = copy.deepcopy(temp.surfaces[1].blocks[2])
-        self.cube.surfaces[1].blocks[1] = copy.deepcopy(temp.surfaces[1].blocks[0])
-        self.cube.surfaces[1].blocks[2] = copy.deepcopy(temp.surfaces[1].blocks[3])
-        self.cube.surfaces[1].blocks[3] = copy.deepcopy(temp.surfaces[1].blocks[1])
+        # counter clockwise
+        self.cube.surfaces[1].blocks[0] = copy.deepcopy(temp.surfaces[1].blocks[1])
+        self.cube.surfaces[1].blocks[1] = copy.deepcopy(temp.surfaces[1].blocks[3])
+        self.cube.surfaces[1].blocks[2] = copy.deepcopy(temp.surfaces[1].blocks[0])
+        self.cube.surfaces[1].blocks[3] = copy.deepcopy(temp.surfaces[1].blocks[2])
 
+        # clockwise
         self.cube.surfaces[3].blocks[0] = copy.deepcopy(temp.surfaces[3].blocks[2])
         self.cube.surfaces[3].blocks[1] = copy.deepcopy(temp.surfaces[3].blocks[0])
         self.cube.surfaces[3].blocks[2] = copy.deepcopy(temp.surfaces[3].blocks[3])
@@ -155,11 +161,13 @@ class Moves:
         self.cube.surfaces[4] = copy.deepcopy(temp.surfaces[2])
 
         # rotate surfaces
-        self.cube.surfaces[1].blocks[0] = copy.deepcopy(temp.surfaces[1].blocks[1])
-        self.cube.surfaces[1].blocks[1] = copy.deepcopy(temp.surfaces[1].blocks[3])
-        self.cube.surfaces[1].blocks[2] = copy.deepcopy(temp.surfaces[1].blocks[0])
-        self.cube.surfaces[1].blocks[3] = copy.deepcopy(temp.surfaces[1].blocks[2])
+        # clockwise
+        self.cube.surfaces[1].blocks[0] = copy.deepcopy(temp.surfaces[1].blocks[2])
+        self.cube.surfaces[1].blocks[1] = copy.deepcopy(temp.surfaces[1].blocks[0])
+        self.cube.surfaces[1].blocks[2] = copy.deepcopy(temp.surfaces[1].blocks[3])
+        self.cube.surfaces[1].blocks[3] = copy.deepcopy(temp.surfaces[1].blocks[1])
 
+        # counter clockwise
         self.cube.surfaces[3].blocks[0] = copy.deepcopy(temp.surfaces[3].blocks[1])
         self.cube.surfaces[3].blocks[1] = copy.deepcopy(temp.surfaces[3].blocks[3])
         self.cube.surfaces[3].blocks[2] = copy.deepcopy(temp.surfaces[3].blocks[0])
@@ -183,33 +191,66 @@ class Moves:
             Moves.rotate_clockwise(self)
             return self.cube
 
+        # if turn_number == 1:
+        # if turn_number == 8:
+        #     Moves.rotate_counter_clockwise(self)
+        #     return self.cube
+
         # if turn_number == 2:
-        if turn_number == 3:
+        if turn_number == 1:
             Moves.turn_right(self)
             Moves.rotate_clockwise(self)
             Moves.turn_left(self)
             return self.cube
+
+        # if turn_number == 3:
+        # if turn_number == 9:
+        #     Moves.turn_right(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_left(self)
+        #     return self.cube
 
         # if turn_number == 4:
-        if turn_number == 1:
+        if turn_number == 3:
             Moves.turn_left(self)
             Moves.rotate_clockwise(self)
             Moves.turn_right(self)
             return self.cube
 
+        # if turn_number == 5:
+        # if turn_number == 7:
+        #     Moves.turn_left(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_right(self)
+        #     return self.cube
+
         # if turn_number == 6:
-        if turn_number == 0:
+        if turn_number == 4:
             Moves.turn_up(self)
             Moves.rotate_clockwise(self)
             Moves.turn_down(self)
             return self.cube
 
+        # if turn_number == 7:
+        # if turn_number == 6:
+        #     Moves.turn_up(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_down(self)
+        #     return self.cube
+
         # if turn_number == 8:
-        if turn_number == 4:
+        if turn_number == 0:
             Moves.turn_down(self)
             Moves.rotate_clockwise(self)
             Moves.turn_up(self)
             return self.cube
+
+        # if turn_number == 9:
+        # if turn_number == 10:
+        #     Moves.turn_down(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_up(self)
+        #     return self.cube
 
         # if turn_number == 10:
         if turn_number == 5:
@@ -219,6 +260,15 @@ class Moves:
             Moves.turn_left(self)
             Moves.turn_left(self)
             return self.cube
+
+        # if turn_number == 11:
+        # if turn_number == 11:
+        #     Moves.turn_right(self)
+        #     Moves.turn_right(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_left(self)
+        #     Moves.turn_left(self)
+        #     return self.cube
 
     @staticmethod
     def is_correct(cube):
@@ -316,10 +366,10 @@ def ids(cube, min_depth, max_depth):
 
 
 def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path):
-    for my in my_frontier:
-        for other in other_frontier:
+    for i, my in enumerate(my_frontier):
+        for j, other in enumerate(other_frontier):
             if Moves.is_same(my, other):
-                return [True, my_frontier, other_frontier, frontier_path, other_frontier_path]
+                return [True, my_frontier, other_frontier, frontier_path, other_frontier_path, i, j]
 
     parents = []
     parent_path = []
@@ -334,28 +384,68 @@ def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path):
             this_parent_path = copy.deepcopy(parent_path[i])
             this_parent_path.append(j + 1)
             frontier_path.append(this_parent_path)
-    return [False, my_frontier, other_frontier, frontier_path, other_frontier_path]
+    return [False, my_frontier, other_frontier, frontier_path, other_frontier_path, -1, -1]
 
 
 def bidirectional(cube1, depth):
     cube2 = Moves.get_correct_cube()
-    frontier1 = [cube1]
-    frontier2 = [cube2]
+    frontier1 = [copy.deepcopy(cube1)]
+    frontier2 = [copy.deepcopy(cube2)]
     frontier1_path = [[0]]
     frontier2_path = [[0]]
-    result = [False, frontier1, frontier2, frontier1_path, frontier2_path]
+    result = [False, frontier1, frontier2, frontier1_path, frontier2_path, -1, -1]
     while depth != 0:
         # from start to goal
         res = copy.deepcopy(result)
         result = bfs(res[1], res[2], res[3], res[4])
         if result[0]:
             print("found1")
+            path1 = result[3][result[5]]
+            # cube11 = result[1][result[5]]
+            # children1 = [copy.deepcopy(cube1)]
+            # for idx in range(1, len(path1)):
+            #     child = Moves(copy.deepcopy(children1[idx - 1])).turns(path1[idx] - 1)
+            #     children1.append(copy.deepcopy(child))
+            path2 = result[4][result[6]]
+            # cube22 = result[2][result[6]]
+            # children2 = [copy.deepcopy(cube2)]
+            # for idx in range(1, len(path2)):
+            #     child = Moves(copy.deepcopy(children2[idx - 1])).turns(path2[idx] - 1)
+            #     children2.append(copy.deepcopy(child))
+            print("moves : ")
+            print("*clockwise")
+            for idx in range(1, len(path1)):
+                print("surface number : " + str(path1[idx]))
+            print("*counterclockwise")
+            for idx in reversed(range(1, len(path2))):
+                print("surface number : " + str(path2[idx]))
+
             break
         # from goal to start
         res = copy.deepcopy(result)
         result = bfs(res[2], res[1], res[4], res[3])
         if result[0]:
             print("found2")
+            path1 = result[3][result[5]]
+            # cube11 = result[1][result[5]]
+            # children1 = [copy.deepcopy(cube1)]
+            # for idx in range(1, len(path1)):
+            #     child = Moves(copy.deepcopy(children1[idx - 1])).turns(path1[idx] - 1)
+            #     children1.append(copy.deepcopy(child))
+            path2 = result[4][result[6]]
+            # cube22 = result[2][result[6]]
+            # children2 = [copy.deepcopy(cube2)]
+            # for idx in range(1, len(path2)):
+            #     child = Moves(copy.deepcopy(children2[idx - 1])).turns(path2[idx] - 1)
+            #     children2.append(copy.deepcopy(child))
+            print("moves : ")
+            print("*clockwise")
+            for idx in range(1, len(path2)):
+                print("surface number : " + str(path2[idx]))
+            print("*counterclockwise")
+            for idx in reversed(range(1, len(path1))):
+                print("surface number : " + str(path1[idx]))
+
             break
         depth -= 1
 
@@ -417,9 +507,9 @@ def main():
     cube = get_input()
     print("start")
 
-    # ids(cube, 10, 11)
+    # ids(cube, 4, 5)
 
-    bidirectional(cube, 5)
+    bidirectional(cube, 3)
     # a_star(cube, 5)
 
     print("end")
