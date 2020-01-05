@@ -505,8 +505,8 @@ def main():
     cube = get_input()
     print("start")
 
-    # ids(cube, 4, 5)
-    # bidirectional(cube, 5)
+    ids(cube, 4, 5)
+    bidirectional(cube, 5)
     ucs(cube, 4)
 
     print("end")
