@@ -14,10 +14,10 @@ class Cube:
 
 
 class Node:
-    def __init__(self, cube, depth, heuristic):
+    def __init__(self, cube, depth):
         self.cube = cube
         self.depth = depth
-        self.cost = heuristic + depth
+        self.cost = depth
 
 
 class Surface:
@@ -192,9 +192,9 @@ class Moves:
             return self.cube
 
         # if turn_number == 1:
-        # if turn_number == 8:
-        #     Moves.rotate_counter_clockwise(self)
-        #     return self.cube
+        if turn_number == 8:
+            Moves.rotate_counter_clockwise(self)
+            return self.cube
 
         # if turn_number == 2:
         if turn_number == 1:
@@ -204,11 +204,11 @@ class Moves:
             return self.cube
 
         # if turn_number == 3:
-        # if turn_number == 9:
-        #     Moves.turn_right(self)
-        #     Moves.rotate_counter_clockwise(self)
-        #     Moves.turn_left(self)
-        #     return self.cube
+        if turn_number == 7:
+            Moves.turn_right(self)
+            Moves.rotate_counter_clockwise(self)
+            Moves.turn_left(self)
+            return self.cube
 
         # if turn_number == 4:
         if turn_number == 3:
@@ -218,11 +218,11 @@ class Moves:
             return self.cube
 
         # if turn_number == 5:
-        # if turn_number == 7:
-        #     Moves.turn_left(self)
-        #     Moves.rotate_counter_clockwise(self)
-        #     Moves.turn_right(self)
-        #     return self.cube
+        if turn_number == 9:
+            Moves.turn_left(self)
+            Moves.rotate_counter_clockwise(self)
+            Moves.turn_right(self)
+            return self.cube
 
         # if turn_number == 6:
         if turn_number == 4:
@@ -232,11 +232,11 @@ class Moves:
             return self.cube
 
         # if turn_number == 7:
-        # if turn_number == 6:
-        #     Moves.turn_up(self)
-        #     Moves.rotate_counter_clockwise(self)
-        #     Moves.turn_down(self)
-        #     return self.cube
+        if turn_number == 10:
+            Moves.turn_up(self)
+            Moves.rotate_counter_clockwise(self)
+            Moves.turn_down(self)
+            return self.cube
 
         # if turn_number == 8:
         if turn_number == 0:
@@ -246,11 +246,11 @@ class Moves:
             return self.cube
 
         # if turn_number == 9:
-        # if turn_number == 10:
-        #     Moves.turn_down(self)
-        #     Moves.rotate_counter_clockwise(self)
-        #     Moves.turn_up(self)
-        #     return self.cube
+        if turn_number == 6:
+            Moves.turn_down(self)
+            Moves.rotate_counter_clockwise(self)
+            Moves.turn_up(self)
+            return self.cube
 
         # if turn_number == 10:
         if turn_number == 5:
@@ -262,13 +262,13 @@ class Moves:
             return self.cube
 
         # if turn_number == 11:
-        # if turn_number == 11:
-        #     Moves.turn_right(self)
-        #     Moves.turn_right(self)
-        #     Moves.rotate_counter_clockwise(self)
-        #     Moves.turn_left(self)
-        #     Moves.turn_left(self)
-        #     return self.cube
+        if turn_number == 11:
+            Moves.turn_right(self)
+            Moves.turn_right(self)
+            Moves.rotate_counter_clockwise(self)
+            Moves.turn_left(self)
+            Moves.turn_left(self)
+            return self.cube
 
     @staticmethod
     def is_correct(cube):
@@ -354,7 +354,11 @@ def ids(cube, min_depth, max_depth):
         max_number_of_nodes = 0
         result = dls(i, cube, path, generated_nodes, explored_nodes, number_of_nodes, max_number_of_nodes)
         if result[0]:
+            print()
+            print("############")
+            print("ids ")
             print("moves : ")
+            print("*clockwise")
             for j in range(len(result[2])):
                 print("surface number : " + str(result[2][j]))
             print()
@@ -365,11 +369,11 @@ def ids(cube, min_depth, max_depth):
             break
 
 
-def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path, infor):
+def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path, information):
     for i, my in enumerate(my_frontier):
         for j, other in enumerate(other_frontier):
             if Moves.is_same(my, other):
-                return [True, my_frontier, other_frontier, frontier_path, other_frontier_path, i, j, infor]
+                return [True, my_frontier, other_frontier, frontier_path, other_frontier_path, i, j, information]
 
     parents = []
     parent_path = []
@@ -377,19 +381,19 @@ def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path, infor):
         parents.append(my_frontier.pop())
         parent_path.append(frontier_path.pop())
 
-    infor[1] += len(parents)
+    information[1] += len(parents)
 
     for i in range(len(parents)):
         for j in range(6):
             child = Moves(copy.deepcopy(parents[i])).turns(j)
-            infor[0] += 1
+            information[0] += 1
             my_frontier.append(copy.deepcopy(child))
             this_parent_path = copy.deepcopy(parent_path[i])
             this_parent_path.append(j + 1)
             frontier_path.append(this_parent_path)
 
-    infor[2] = infor[0] - infor[1]
-    return [False, my_frontier, other_frontier, frontier_path, other_frontier_path, -1, -1, infor]
+    information[2] = information[0] - information[1]
+    return [False, my_frontier, other_frontier, frontier_path, other_frontier_path, -1, -1, information]
 
 
 def bidirectional(cube1, depth):
@@ -398,26 +402,18 @@ def bidirectional(cube1, depth):
     frontier2 = [copy.deepcopy(cube2)]
     frontier1_path = [[0]]
     frontier2_path = [[0]]
-    infor = [2, 0, 0] # generated node # explored node # max node in memory
-    result = [False, frontier1, frontier2, frontier1_path, frontier2_path, -1, -1, infor]
+    information = [2, 0, 0]  # generated node # explored node # max node in memory
+    result = [False, frontier1, frontier2, frontier1_path, frontier2_path, -1, -1, information]
     while depth != 0:
         # from start to goal
         res = copy.deepcopy(result)
         result = bfs(res[1], res[2], res[3], res[4], res[7])
         if result[0]:
-            print("found1")
             path1 = result[3][result[5]]
-            # cube11 = result[1][result[5]]
-            # children1 = [copy.deepcopy(cube1)]
-            # for idx in range(1, len(path1)):
-            #     child = Moves(copy.deepcopy(children1[idx - 1])).turns(path1[idx] - 1)
-            #     children1.append(copy.deepcopy(child))
             path2 = result[4][result[6]]
-            # cube22 = result[2][result[6]]
-            # children2 = [copy.deepcopy(cube2)]
-            # for idx in range(1, len(path2)):
-            #     child = Moves(copy.deepcopy(children2[idx - 1])).turns(path2[idx] - 1)
-            #     children2.append(copy.deepcopy(child))
+            print()
+            print("############")
+            print("bidirectional ")
             print("moves : ")
             print("*clockwise")
             for idx in range(1, len(path1)):
@@ -435,19 +431,11 @@ def bidirectional(cube1, depth):
         res = copy.deepcopy(result)
         result = bfs(res[2], res[1], res[4], res[3], res[7])
         if result[0]:
-            print("found2")
             path1 = result[3][result[5]]
-            # cube11 = result[1][result[5]]
-            # children1 = [copy.deepcopy(cube1)]
-            # for idx in range(1, len(path1)):
-            #     child = Moves(copy.deepcopy(children1[idx - 1])).turns(path1[idx] - 1)
-            #     children1.append(copy.deepcopy(child))
             path2 = result[4][result[6]]
-            # cube22 = result[2][result[6]]
-            # children2 = [copy.deepcopy(cube2)]
-            # for idx in range(1, len(path2)):
-            #     child = Moves(copy.deepcopy(children2[idx - 1])).turns(path2[idx] - 1)
-            #     children2.append(copy.deepcopy(child))
+            print()
+            print("############")
+            print("bidirectional ")
             print("moves : ")
             print("*clockwise")
             for idx in range(1, len(path2)):
@@ -464,67 +452,70 @@ def bidirectional(cube1, depth):
         depth -= 1
 
 
-def heuristic_finder(cube):
-    surface_colors = []
-    for surface in cube.surfaces:
-        color_numbers = []
-        for block in surface.blocks:
-            color = block.color_number
-            if color not in color_numbers:
-                color_numbers.append(color)
-        surface_colors.append(len(color_numbers))
-    result = 0
-    for i in range(6):
-        if surface_colors[i] == 2:
-            result += 1
-        if surface_colors[i] == 3:
-            result += 2
-        if surface_colors[i] == 4:
-            result += 4
-    return result
-
-
-def a_star_search(frontier, depth):
+def ucs_search(frontier, depth, frontier_path, information):
     while len(frontier) != 0:
         min_cost = 1000
-        min_cost_cube = None
-        node = None
+        min_cost_node = None
+        # node = None
         for fro in frontier:
             if fro.cost < min_cost:
                 min_cost = fro.cost
-                min_cost_cube = fro
-        if len(frontier) != 0:
-            node = frontier.pop(frontier.index(min_cost_cube))
+                min_cost_node = fro
+        # if len(frontier) != 0:
 
-        if Moves(node.cube).is_correct():
-            return True
+        idx = frontier.index(min_cost_node)
+        node = frontier.pop(idx)
+        parent_path = frontier_path.pop(idx)
+
+        information[1] += 1
+
+        if Moves.is_correct(node.cube):
+            return [True, parent_path, information]
         if node.depth == depth:
             continue
 
         for i in range(6):
-            child = Moves(copy.deepcopy(min_cost_cube.cube)).turns(i)
-            child_node = Node(child, min_cost_cube.depth + 1, heuristic_finder(child))
-            frontier.append(child_node)
-    return False
+            child = Moves(copy.deepcopy(node.cube)).turns(i)
+            child_node = Node(copy.deepcopy(child), node.depth + 1)
+            information[0] += 1
+            par_path = copy.deepcopy(parent_path)
+            par_path.append(i + 1)
+            frontier_path.append(copy.deepcopy(par_path))
+            frontier.append(copy.deepcopy(child_node))
+
+        information[2] = information[0] - information[1]
+    return [False, parent_path, information]
 
 
-def a_star(cube, depth):
-    heuristic = heuristic_finder(cube)
-    root = Node(cube, 0, heuristic)
+def ucs(cube, depth):
+    root = Node(cube, 0)
     frontier = [root]
+    frontier_path = [[0]]
+    information = [1, 0, 0]  # generated node # explored node # max node in memory
 
-    if a_star_search(frontier, depth):
-        print("found")
+    result = ucs_search(frontier, depth, frontier_path, information)
+    if result[0]:
+        print()
+        print("############")
+        print("ucs ")
+        print("moves : ")
+        print("*clockwise")
+        for idx in range(1, len(result[1])):
+            print("surface number : " + str(result[1][idx]))
+        print()
+        print("generated nodes : " + str(result[2][0]))
+        print("explored nodes : " + str(result[2][1]))
+        print("result depth : " + str(len(result[1]) - 1))
+        print("max number of nodes in memory : " + str(result[2][2]))
 
 
 def main():
     cube = get_input()
     print("start")
 
-    # ids(cube, 4, 5)
-
-    bidirectional(cube, 3)
-    # a_star(cube, 5)
+    ids(cube, 3, 6)
+    bidirectional(cube, 6)
+    ucs(cube, 6)
 
     print("end")
 
