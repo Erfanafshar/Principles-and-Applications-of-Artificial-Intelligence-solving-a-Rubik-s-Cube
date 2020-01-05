@@ -365,11 +365,11 @@ def ids(cube, min_depth, max_depth):
             break
 
 
-def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path):
+def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path, infor):
     for i, my in enumerate(my_frontier):
         for j, other in enumerate(other_frontier):
             if Moves.is_same(my, other):
-                return [True, my_frontier, other_frontier, frontier_path, other_frontier_path, i, j]
+                return [True, my_frontier, other_frontier, frontier_path, other_frontier_path, i, j, infor]
 
     parents = []
     parent_path = []
@@ -377,14 +377,19 @@ def bfs(my_frontier, other_frontier, frontier_path, other_frontier_path):
         parents.append(my_frontier.pop())
         parent_path.append(frontier_path.pop())
 
+    infor[1] += len(parents)
+
     for i in range(len(parents)):
         for j in range(6):
             child = Moves(copy.deepcopy(parents[i])).turns(j)
+            infor[0] += 1
             my_frontier.append(copy.deepcopy(child))
             this_parent_path = copy.deepcopy(parent_path[i])
             this_parent_path.append(j + 1)
             frontier_path.append(this_parent_path)
-    return [False, my_frontier, other_frontier, frontier_path, other_frontier_path, -1, -1]
+
+    infor[2] = infor[0] - infor[1]
+    return [False, my_frontier, other_frontier, frontier_path, other_frontier_path, -1, -1, infor]
 
 
 def bidirectional(cube1, depth):
@@ -393,11 +398,12 @@ def bidirectional(cube1, depth):
     frontier2 = [copy.deepcopy(cube2)]
     frontier1_path = [[0]]
     frontier2_path = [[0]]
-    result = [False, frontier1, frontier2, frontier1_path, frontier2_path, -1, -1]
+    infor = [2, 0, 0] # generated node # explored node # max node in memory
+    result = [False, frontier1, frontier2, frontier1_path, frontier2_path, -1, -1, infor]
     while depth != 0:
         # from start to goal
         res = copy.deepcopy(result)
-        result = bfs(res[1], res[2], res[3], res[4])
+        result = bfs(res[1], res[2], res[3], res[4], res[7])
         if result[0]:
             print("found1")
             path1 = result[3][result[5]]
@@ -419,11 +425,15 @@ def bidirectional(cube1, depth):
             print("*counterclockwise")
             for idx in reversed(range(1, len(path2))):
                 print("surface number : " + str(path2[idx]))
-
+            print()
+            print("generated nodes : " + str(result[7][0]))
+            print("explored nodes : " + str(result[7][1]))
+            print("result depth : " + str(len(path1) + len(path2) - 2))
+            print("max number of nodes in memory : " + str(result[7][2]))
             break
         # from goal to start
         res = copy.deepcopy(result)
-        result = bfs(res[2], res[1], res[4], res[3])
+        result = bfs(res[2], res[1], res[4], res[3], res[7])
         if result[0]:
             print("found2")
             path1 = result[3][result[5]]
@@ -445,7 +455,11 @@ def bidirectional(cube1, depth):
             print("*counterclockwise")
             for idx in reversed(range(1, len(path1))):
                 print("surface number : " + str(path1[idx]))
-
+            print()
+            print("generated nodes : " + str(result[7][0]))
+            print("explored nodes : " + str(result[7][1]))
+            print("result depth : " + str(len(path1) + len(path2) - 2))
+            print("max number of nodes in memory : " + str(result[7][2]))
             break
         depth -= 1
 
