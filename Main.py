@@ -492,9 +492,9 @@ def main():
     cube = get_input()
     print("start")
 
-    ids(cube, 3, 6)
-    bidirectional(cube, 6)
-    ucs(cube, 6)
+    ids(cube, 4, 5)
+    bidirectional(cube, 4)
+    ucs(cube, 4)
 
     print("end")
 
