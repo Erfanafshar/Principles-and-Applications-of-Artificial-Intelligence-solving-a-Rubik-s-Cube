@@ -433,7 +433,7 @@ def bidirectional(cube1, depth):
         depth -= 1
 
 
-def ucs_search(frontier, depth, frontier_path, information):
+def ucs_search(frontier, depth, frontier_path, information, explored):
     while len(frontier) != 0:
         min_cost = 1000
         min_cost_node = None
@@ -447,6 +447,7 @@ def ucs_search(frontier, depth, frontier_path, information):
         parent_path = frontier_path.pop(idx)
 
         information[1] += 1
+        explored.append(node)
 
         if Moves.is_correct(node.cube):
             return [True, parent_path, information]
@@ -456,6 +457,17 @@ def ucs_search(frontier, depth, frontier_path, information):
         for i in range(6):
             child = Moves(copy.deepcopy(node.cube)).turns(i)
             child_node = Node(copy.deepcopy(child), node.depth + 1)
+            founded = False
+            for val in frontier:
+                if Moves.is_same(val.cube, child):
+                    founded = True
+                    break
+            for val in explored:
+                if Moves.is_same(val.cube, child):
+                    founded = True
+                    break
+            if founded:
+                continue
             information[0] += 1
             par_path = copy.deepcopy(parent_path)
             par_path.append(i + 1)
@@ -469,10 +481,11 @@ def ucs_search(frontier, depth, frontier_path, information):
 def ucs(cube, depth):
     root = Node(cube, 0)
     frontier = [root]
+    explored = []
     frontier_path = [[0]]
     information = [1, 0, 0]  # generated node # explored node # max node in memory
 
-    result = ucs_search(frontier, depth, frontier_path, information)
+    result = ucs_search(frontier, depth, frontier_path, information, explored)
     if result[0]:
         print()
         print("############")
@@ -492,8 +505,8 @@ def main():
     cube = get_input()
     print("start")
 
-    ids(cube, 4, 5)
-    bidirectional(cube, 4)
+    # ids(cube, 4, 5)
+    # bidirectional(cube, 5)
     ucs(cube, 4)
 
     print("end")
