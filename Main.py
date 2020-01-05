@@ -1,10 +1,3 @@
-# Color numbers
-# orange = 1
-# green = 2
-# white = 3
-# blue = 4
-# red = 5
-# yellow = 6
 import copy
 
 
@@ -186,73 +179,62 @@ class Moves:
 
     # turns with number
     def turns(self, turn_number):
-        # if turn_number == 0:
         if turn_number == 2:
             Moves.rotate_clockwise(self)
             return self.cube
 
-        # if turn_number == 1:
-        if turn_number == 8:
-            Moves.rotate_counter_clockwise(self)
-            return self.cube
+        # if turn_number == 8:
+        #     Moves.rotate_counter_clockwise(self)
+        #     return self.cube
 
-        # if turn_number == 2:
         if turn_number == 1:
             Moves.turn_right(self)
             Moves.rotate_clockwise(self)
             Moves.turn_left(self)
             return self.cube
 
-        # if turn_number == 3:
-        if turn_number == 7:
-            Moves.turn_right(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_left(self)
-            return self.cube
+        # if turn_number == 7:
+        #     Moves.turn_right(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_left(self)
+        #     return self.cube
 
-        # if turn_number == 4:
         if turn_number == 3:
             Moves.turn_left(self)
             Moves.rotate_clockwise(self)
             Moves.turn_right(self)
             return self.cube
 
-        # if turn_number == 5:
-        if turn_number == 9:
-            Moves.turn_left(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_right(self)
-            return self.cube
+        # if turn_number == 9:
+        #     Moves.turn_left(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_right(self)
+        #     return self.cube
 
-        # if turn_number == 6:
         if turn_number == 4:
             Moves.turn_up(self)
             Moves.rotate_clockwise(self)
             Moves.turn_down(self)
             return self.cube
 
-        # if turn_number == 7:
-        if turn_number == 10:
-            Moves.turn_up(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_down(self)
-            return self.cube
+        # if turn_number == 10:
+        #     Moves.turn_up(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_down(self)
+        #     return self.cube
 
-        # if turn_number == 8:
         if turn_number == 0:
             Moves.turn_down(self)
             Moves.rotate_clockwise(self)
             Moves.turn_up(self)
             return self.cube
 
-        # if turn_number == 9:
-        if turn_number == 6:
-            Moves.turn_down(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_up(self)
-            return self.cube
+        # if turn_number == 6:
+        #     Moves.turn_down(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_up(self)
+        #     return self.cube
 
-        # if turn_number == 10:
         if turn_number == 5:
             Moves.turn_right(self)
             Moves.turn_right(self)
@@ -262,13 +244,12 @@ class Moves:
             return self.cube
 
         # if turn_number == 11:
-        if turn_number == 11:
-            Moves.turn_right(self)
-            Moves.turn_right(self)
-            Moves.rotate_counter_clockwise(self)
-            Moves.turn_left(self)
-            Moves.turn_left(self)
-            return self.cube
+        #     Moves.turn_right(self)
+        #     Moves.turn_right(self)
+        #     Moves.rotate_counter_clockwise(self)
+        #     Moves.turn_left(self)
+        #     Moves.turn_left(self)
+        #     return self.cube
 
     @staticmethod
     def is_correct(cube):
@@ -456,12 +437,10 @@ def ucs_search(frontier, depth, frontier_path, information):
     while len(frontier) != 0:
         min_cost = 1000
         min_cost_node = None
-        # node = None
         for fro in frontier:
             if fro.cost < min_cost:
                 min_cost = fro.cost
                 min_cost_node = fro
-        # if len(frontier) != 0:
 
         idx = frontier.index(min_cost_node)
         node = frontier.pop(idx)
