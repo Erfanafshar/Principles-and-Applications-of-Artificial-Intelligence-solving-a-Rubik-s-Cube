@@ -270,11 +270,26 @@ class Moves:
 
     @staticmethod
     def get_correct_cube():
+        # surfaces = []
+        # for i in range(1, 7):
+        #     blocks = [Block(str(i)), Block(str(i)), Block(str(i)), Block(str(i))]
+        #     surfaces.append(Surface(copy.deepcopy(blocks)))
+        # return Cube(surfaces)
         surfaces = []
-        for i in range(1, 7):
-            blocks = [Block(str(i)), Block(str(i)), Block(str(i)), Block(str(i))]
-            surfaces.append(Surface(copy.deepcopy(blocks)))
+        blocks = [Block(str(6)), Block(str(6)), Block(str(6)), Block(str(6))]
+        surfaces.append(Surface(copy.deepcopy(blocks)))
+        blocks = [Block(str(5)), Block(str(5)), Block(str(5)), Block(str(5))]
+        surfaces.append(Surface(copy.deepcopy(blocks)))
+        blocks = [Block(str(2)), Block(str(2)), Block(str(2)), Block(str(2))]
+        surfaces.append(Surface(copy.deepcopy(blocks)))
+        blocks = [Block(str(1)), Block(str(1)), Block(str(1)), Block(str(1))]
+        surfaces.append(Surface(copy.deepcopy(blocks)))
+        blocks = [Block(str(3)), Block(str(3)), Block(str(3)), Block(str(3))]
+        surfaces.append(Surface(copy.deepcopy(blocks)))
+        blocks = [Block(str(4)), Block(str(4)), Block(str(4)), Block(str(4))]
+        surfaces.append(Surface(copy.deepcopy(blocks)))
         return Cube(surfaces)
+
 
 
 def get_input():
@@ -505,9 +520,9 @@ def main():
     cube = get_input()
     print("start")
 
-    ids(cube, 4, 5)
-    bidirectional(cube, 5)
-    ucs(cube, 4)
+    #ids(cube, 1, 5)
+    bidirectional(cube, 6)
+    #ucs(cube, 6)
 
     print("end")
 
